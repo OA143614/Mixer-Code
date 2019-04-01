@@ -56,6 +56,26 @@ void sample()
   Serial.println(input1);
 }
 
+void back_button_interrupt()
+{
+  
+}
+
+void next_button_interrupt()
+{
+  
+}
+
+void previous_button_interrupt()
+{
+  
+}
+
+void enter_button_interrupt()
+{
+  
+}
+
 int Channel1Fader;
 int Channel2Fader;
 int Channel3Fader;
