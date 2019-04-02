@@ -30,10 +30,7 @@ void setup()
   Encoder knob2(25, 26);
   Encoder knob3(54, 55);
   
-    //MenuButton1Back      = digitalRead(33); //these will need to be handled by the bounce library
-  //MenuButton1Next      = digitalRead(34);
-  //MenuButton1Previous  = digitalRead(35);     
-  //MenuButton1Enter     = digitalRead(36);    
+   
   
   //set up bounce library for the 4 menu buttons
   Bounce backbutton = Bounce(33, 10); 
@@ -133,21 +130,21 @@ void previous_button()
 {
   switch(menustate)
   {
-    case 1:
+    case 1://wraparound for the top level menu
       menustate = 5;
       break;
-    case 6:
+    case 6://wraparound for the parametric eq submenu
       menustate = 8;
       break;
-    case 9:
+    case 9://only one option in this submenu - no update neccesary
       break;
-    case 10:
+    case 10://wraparound for the compression submenu
       menustate = 15
       break;
-    case 16:
+    case 16://wraparound for the monitor channel select submenu
       menustate = 21;
       break;
-    default:
+    default://in general, except for the preceding 5 cases, this decrements the menustate
       menustate--;
       break;
   }
@@ -194,10 +191,10 @@ int auxMixMuteButton;
 int RotaryEncoder1Val;
 int RotaryEncoder2Val;
 int RotaryEncoder3Val;
-int MenuButton1Book;
-int MenuButton1Next;
-int MenuButton1Previous;
-int MenuButton1Enter;
+int MenuButtonBack;
+int MenuButtonNext;
+int MenuButtonPrevious;
+int MenuButtonEnter;
 
 void poll_controls()
 {//check the values from all the UI controls and update their values
@@ -217,15 +214,28 @@ void poll_controls()
   Channel2MuteButton  = digitalRead(30);
   Channel3MuteButton  = digitalRead(31);
   Channel4MuteButton  = digitalRead(24);
-  mainMixMuteButton = digitalRead(27);
+  mainMixMuteButton   = digitalRead(27);
   auxMixMuteButton    = digitalRead(28);
 
-  
   RotaryEncoder1Val   = knob1.read();
   RotaryEncoder2Val   = knob2.read();
   RotaryEncoder3Val   = knob3.read();
 
+  if(backbutton.update())
+    if(backbutton.risingEdge())
+      back_button();
   
+  if(nextbutton.update())
+    if(nextbutton.risingEdge())
+      next_button();
+  
+  if(prevbutton.update())
+    if(prevbutton.risingEdge())
+      previous_button();
+  
+  if(entrbutton.update())
+    if(entrbutton.risingEdge())
+      enter_button();
  
 }                                           
 
