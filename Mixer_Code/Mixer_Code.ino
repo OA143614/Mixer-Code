@@ -18,12 +18,31 @@
 #include <Arduino.h>
 #include <SPI.h>
 #include <Encoder.h>
+#include <Bounce.h>
+
+int menustate;
 
 void setup() 
 {//initialization and setup of all initial values and initial state
   
-  //set up devices
-
+  //set up encoders
+  Encoder knob1(9, 10);
+  Encoder knob2(25, 26);
+  Encoder knob3(54, 55);
+  
+    //MenuButton1Back      = digitalRead(33); //these will need to be handled by the bounce library
+  //MenuButton1Next      = digitalRead(34);
+  //MenuButton1Previous  = digitalRead(35);     
+  //MenuButton1Enter     = digitalRead(36);    
+  
+  //set up bounce library for the 4 menu buttons
+  Bounce backbutton = Bounce(33, 10); 
+  Bounce nextbutton = Bounce(34, 10); 
+  Bounce prevbutton = Bounce(35, 10); 
+  Bounce entrbutton = Bounce(36, 10);
+  
+  //set up screens
+  
   //poll initial values of all controls
   poll_controls();
 
@@ -35,16 +54,14 @@ void setup()
   FrequencyTimer2::setPeriod(22);
   FrequencyTimer2::enable();
   FrequencyTimer2::setOnOverflow(sample);
-
-  Encoder knob1(9, 10);
-  Encoder knob2(25, 26);
-  Encoder knob3(54, 55);
+  
+  menustate = 1;
 }
 
 volatile uint16_t current_sample1;
 volatile uint16_t current_sample2;
 volatile uint16_t current_sample3;
-volatile uint16_t current_sample4 ;
+volatile uint16_t current_sample4;
 
 void sample()
 {//this function is attached to the timed interrupt
@@ -56,24 +73,105 @@ void sample()
   Serial.println(input1);
 }
 
-void back_button_interrupt()
+//the menu to be displayed on the larger screen is structured as follows
+// 1 - the welcome screen
+// 2,3,4,5 - the top level menu options (Parametric eq, graphic eq, compression, monitor channel select)
+// 6,7,8 - the bands of the parametric eq
+// 9 - the graphic eq bands
+// 10-15 - the different channels in the compression menu
+// 16-21 - the monitor channel selections
+
+void back_button()
 {
-  
+  if(menustate >= 1 && menustate <= 5)
+  {//this is the top level menu - go to the 'welcome' screen
+    menustate = 1;
+  }
+  else if(menustate >= 6 && menustate <= 8)
+  {//the menu starts in the parametric eq - go to the parametric eq top level menu option
+    menustate = 2;
+  }
+  else if(menustate == 9)
+  {//the menu starts in the graphic eq - go to the graphic eq top level menu option
+    menustate = 3;
+  }
+  else if(menustate >= 10 && menustate <= 15)
+  {//the menu starts in the compression menu - go to the compression top level menu option
+    menustate = 4;
+  }
+  else if(menustate >= 16 && menustate <= 21)
+  {//the menu starts in the monitor channel select menu - go to the monitor channel select top level menu option
+    menustate = 5;
+  }
 }
 
-void next_button_interrupt()
+void next_button()
 {
-  
+  switch(menustate)
+  {
+    case 5://wraparound for the top level menu
+      menustate = 1;
+      break;
+    case 8://wraparound for the parametric eq submenu
+      menustate = 6;
+      break;
+    case 9://only one option in this submenu - no update neccesary
+      break;
+    case 15://wraparound for the compression submenu
+      menustate = 10;
+      break;
+    case 21://wraparound for the monitor channel select submenu
+      menustate = 16;
+      break;
+    default://in general, except for the preceding 5 cases, this increments the menustate
+      menustate++;
+      break;
+  }
 }
 
-void previous_button_interrupt()
+void previous_button()
 {
-  
+  switch(menustate)
+  {
+    case 1:
+      menustate = 5;
+      break;
+    case 6:
+      menustate = 8;
+      break;
+    case 9:
+      break;
+    case 10:
+      menustate = 15
+      break;
+    case 16:
+      menustate = 21;
+      break;
+    default:
+      menustate--;
+      break;
+  }
 }
 
-void enter_button_interrupt()
+void enter_button()
 {
-  
+  switch(menustate)
+  {
+    case 2://you are selecting the parametric eq submenu
+      menustate = 6;
+      break;
+    case 3://you are selecting the graphic eq submenu
+      menustate = 9;
+      break;
+    case 4://you are selecting the compression submenu
+      menustate = 10;
+      break;
+    case 5://you are selecting the monitor channel select submenu
+      menustate = 16;
+      break;
+    default:
+      break;
+  }
 }
 
 int Channel1Fader;
@@ -128,11 +226,8 @@ void poll_controls()
   RotaryEncoder3Val   = knob3.read();
 
   
-  MenuButton1Back      = digitalRead(33); //these will need to be handled by interrupts
-  MenuButton1Next      = digitalRead(34);     //keep current menu state as a number -
-  MenuButton1Previous  = digitalRead(35);     //display function is a switch statement based on this number
-  MenuButton1Enter     = digitalRead(36);     //in the interrupts, make sure we know the transitions associated
-}                                             //with the 
+ 
+}                                           
 
 void loop()                     
 {//this will run in the time when the interrupt is not running
