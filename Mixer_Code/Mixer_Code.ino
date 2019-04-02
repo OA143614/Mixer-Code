@@ -93,12 +93,9 @@ int Channel3MuteButton;
 int Channel4MuteButton;
 int mainMixMuteButton;
 int auxMixMuteButton;
-int RotaryEncoder1Pin1;
-int RotaryEncoder1Pin2;
-int RotaryEncoder2Pin1;
-int RotaryEncoder2Pin2;
-int RotaryEncoder3Pin1;
-int RotaryEncoder3Pin2;
+int RotaryEncoder1Val;
+int RotaryEncoder2Val;
+int RotaryEncoder3Val;
 int MenuButton1Book;
 int MenuButton1Next;
 int MenuButton1Previous;
@@ -126,12 +123,10 @@ void poll_controls()
   auxMixMuteButton    = digitalRead(28);
 
   
-  RotaryEncoder1Pin1   = digitalRead(9); //these will need to be handled by the Encoder library
-  RotaryEncoder1Pin2   = digitalRead(10);
-  RotaryEncoder2Pin1   = digitalRead(25);
-  RotaryEncoder2Pin2   = digitalRead(26);
-  RotaryEncoder3Pin1   = digitalRead(54);
-  RotaryEncoder3Pin2   = digitalRead(55);
+  RotaryEncoder1Val   = knob1.read();
+  RotaryEncoder2Val   = knob2.read();
+  RotaryEncoder3Val   = knob3.read();
+
   
   MenuButton1Back      = digitalRead(33); //these will need to be handled by interrupts
   MenuButton1Next      = digitalRead(34);     //keep current menu state as a number -
