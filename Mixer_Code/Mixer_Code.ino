@@ -20,8 +20,10 @@
 #include <Encoder.h>
 #include <Bounce.h>
 
+//this integer holds the current state of the menu
 int menustate;
 
+//these hold the analog values from the faders
 int Channel1Fader;
 int Channel2Fader;
 int Channel3Fader;
@@ -30,13 +32,16 @@ int Channel4Fader;
 int mainOutFader;
 int auxOutFader;
 
+//these hold the analog values from the aux mix pots
 int Channel1AuxLevel;
 int Channel2AuxLevel;
 int Channel3AuxLevel;
 int Channel4AuxLevel;
 
+//this holds the analog value from the headphone volume control pot
 int HeadphoneVolumeControl;
 
+//these hold the digital values for all the mute buttons
 int Channel1MuteButton;
 int Channel2MuteButton;
 int Channel3MuteButton;
@@ -45,6 +50,7 @@ int Channel4MuteButton;
 int mainMixMuteButton;
 int auxMixMuteButton;
 
+//these are used to hold the acumulated values for the rotary encoders
 int RotaryEncoder1Val;
 int RotaryEncoder2Val;
 int RotaryEncoder3Val;
@@ -88,6 +94,7 @@ void setup()
   menustate = 1;
 }
 
+//these hold the values read from the ADCs
 volatile uint16_t current_sample1;
 volatile uint16_t current_sample2;
 volatile uint16_t current_sample3;
@@ -106,10 +113,10 @@ void sample()
 //the menu to be displayed on the larger screen is structured as follows
 // 1 - the welcome screen
 // 2,3,4,5 - the top level menu options (Parametric eq, graphic eq, compression, monitor channel select)
-// 6,7,8 - the bands of the parametric eq
-// 9 - the graphic eq bands
-// 10-15 - the different channels in the compression menu
-// 16-21 - the monitor channel selections
+// 6,7,8 - the bands of the parametric eq (band 1, band 2, band 3)
+// 9 - the graphic eq bands (three bands adjusted by the three knobs)
+// 10-15 - the different channels in the compression menu (in1, in2, in3, in4, mainout, auxout, in order)
+// 16-21 - the monitor channel selections (in1, in2, in3, in4, mainout, auxout, in order)
 
 void back_button()
 {
