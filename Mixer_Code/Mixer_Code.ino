@@ -22,6 +22,33 @@
 
 int menustate;
 
+int Channel1Fader;
+int Channel2Fader;
+int Channel3Fader;
+int Channel4Fader;
+
+int mainOutFader;
+int auxOutFader;
+
+int Channel1AuxLevel;
+int Channel2AuxLevel;
+int Channel3AuxLevel;
+int Channel4AuxLevel;
+
+int HeadphoneVolumeControl;
+
+int Channel1MuteButton;
+int Channel2MuteButton;
+int Channel3MuteButton;
+int Channel4MuteButton;
+
+int mainMixMuteButton;
+int auxMixMuteButton;
+
+int RotaryEncoder1Val;
+int RotaryEncoder2Val;
+int RotaryEncoder3Val;
+
 void setup() 
 {//initialization and setup of all initial values and initial state
   
@@ -170,31 +197,6 @@ void enter_button()
       break;
   }
 }
-
-int Channel1Fader;
-int Channel2Fader;
-int Channel3Fader;
-int Channel4Fader;
-int mainOutFader;
-int auxOutFader;
-int Channel1AuxLevel;
-int Channel2AuxLevel;
-int Channel3AuxLevel;
-int Channel4AuxLevel;
-int HeadphoneVolumeControl;
-int Channel1MuteButton;
-int Channel2MuteButton;
-int Channel3MuteButton;
-int Channel4MuteButton;
-int mainMixMuteButton;
-int auxMixMuteButton;
-int RotaryEncoder1Val;
-int RotaryEncoder2Val;
-int RotaryEncoder3Val;
-int MenuButtonBack;
-int MenuButtonNext;
-int MenuButtonPrevious;
-int MenuButtonEnter;
 
 void poll_controls()
 {//check the values from all the UI controls and update their values
