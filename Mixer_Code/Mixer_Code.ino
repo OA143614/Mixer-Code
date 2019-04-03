@@ -57,6 +57,12 @@ void setup()
   Encoder knob2(25, 26);
   Encoder knob3(54, 55);
   
+  //initialize values for encoders
+  knob1.write(0);
+  knob2.write(0);
+  knob3.write(0);
+  //should this happen again when we enter a new menu state?
+  
    
   
   //set up bounce library for the 4 menu buttons
