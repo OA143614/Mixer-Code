@@ -343,9 +343,46 @@ update_screens()
   {
     case 1://show the welcome screen
       break;
-    case 2:
+    case 2://show the parametric EQ top level menu option
       break;
-      
+    case 3://show the graphic EQ top level menu option
+      break;
+    case 4://show the compression top level menu option
+      break;
+    case 5://show the monitor channel select top level menu option
+      break;
+    case 6://show the band 1 parametric EQ selection
+      break;
+    case 7://show the band 2 parametric EQ selection
+      break;
+    case 8://show the band 3 parametric EQ selection
+      break;
+    case 9://show the bands of the graphic EQ
+      break;
+    case 10://show the input 1 compression options
+      break;
+    case 11://show the input 2 compression options
+      break;
+    case 12://show the input 3 compression options
+      break;
+    case 13://show the input 4 compression options
+      break;
+    case 14://show the main output compression options
+      break;
+    case 15://show the aux output compression options
+      break;
+    case 16:
+      break;
+    case 17:
+      break;
+    case 18:
+      break;
+    case 19:
+      break;
+    case 20:
+      break;
+    case 21:
+      break;
     default:
       break;
       
