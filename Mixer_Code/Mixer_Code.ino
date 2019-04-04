@@ -104,7 +104,7 @@ volatile uint16_t current_sample4;
 void sample()
 {//this function is attached to the timed interrupt
   digitalWrite(33, HIGH);
-   SPI.beginTransaction(SPISettings(spi_speed, MSBFIRST, SPI_MODE0));
+  SPI.beginTransaction(SPISettings(spi_speed, MSBFIRST, SPI_MODE0));
   input1 = SPI.transfer16(0);
   SPI.endTransaction();
   digitalWrite(33, LOW);
@@ -245,8 +245,10 @@ void poll_controls()
   
 
   //if(abs(val=knob.read())) - if the read returns a nonzero value, this if statement will evaluate to true.
+    //positive integers make if evaluate true - the value is significant whether it is positive or negative, thus, abs()
   if(abs(RotaryEncoder1Val = knob1.read())
      encoder1_update(RotaryEncoder1Val);//update the values, based upon the current menustate
+     
      
   if(abs(RotaryEncoder2Val = knob2.read())
      encoder2_update(RotaryEncoder2Val);
@@ -277,13 +279,85 @@ void poll_controls()
     if(entrbutton.risingEdge())
       enter_button();
  
-}                                           
+}      
+     
+//Encoder update functions - 
+     //these will need to be sensitive to the current state of the menu, 
+     //i.e. menustate will effect what the value is used for in each function
+     
+//relevant menustates -
+     //6 - adjust parameters of band 1 of the parametric equalizer
+     //7 - adjust parameters of band 2 of the parametric equalizer
+     //8 - adjust parameters of band 3 of the parametric equalizer
+     
+     //9 - adjust the gains of each band of the graphic equalizer
+     
+     //10 - adjust the parameters of input 1's compression
+     //11 - adjust the parameters of input 2's compression
+     //12 - adjust the parameters of input 3's compression
+     //13 - adjust the parameters of input 4's compression
+     //14 - adjust the parameters of main output's compression
+     //15 - adjust the parameters of aux output's compression
+     
+//parametric eq's have 
+     //Q, gain, center_frequency
+     
+//graphic equalizer has
+     //gain for 'bass', gain for 'mid', gain for 'high'
+     
+//compression has 
+     //threshold(dB), ratio, third knob does nothing (or maybe makeup gain)
+     
+
+encoder1_update(int increment)
+{
+   switch(menustate)
+   {
+
+     default:
+       break;
+   }
+}
+encoder2_update(int increment)
+{
+  switch(menustate)
+  {
+      
+     default:
+       break;
+  }
+}
+encoder3_update(int increment)
+{
+  switch(menustate)
+  {
+      
+     default:
+       break;
+  }
+}
+     
+update_screens()
+{
+  switch(menustate)
+  {
+    case 1://show the welcome screen
+      break;
+    case 2:
+      break;
+      
+    default:
+      break;
+      
+  }
+}
 
 void loop()                     
 {//this will run in the time when the interrupt is not running
 
   //screens update
+  update_screens();
 
   //check the values of all controls
-    poll_controls();
+  poll_controls();
 }
