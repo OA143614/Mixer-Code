@@ -19,6 +19,7 @@
 #include <SPI.h>
 #include <Encoder.h>
 #include <Bounce.h>
+#include <math.h>
 
 //this integer holds the current state of the menu
 int menustate;
@@ -211,6 +212,16 @@ void enter_button()
   }
 }
 
+void peakfiltercalc()
+{
+  
+}
+  
+void notchfiltercalc()
+{
+  
+}
+
 void poll_controls()
 {//check the values from all the UI controls and update their values
   
@@ -231,11 +242,25 @@ void poll_controls()
   Channel4MuteButton  = digitalRead(24);
   mainMixMuteButton   = digitalRead(27);
   auxMixMuteButton    = digitalRead(28);
+  
 
-  RotaryEncoder1Val   = knob1.read();
-  RotaryEncoder2Val   = knob2.read();
-  RotaryEncoder3Val   = knob3.read();
-
+  //if(abs(val=knob.read())) - if the read returns a nonzero value, this if statement will evaluate to true.
+  if(abs(RotaryEncoder1Val = knob1.read())
+     encoder1_update(RotaryEncoder1Val);//update the values, based upon the current menustate
+     
+  if(abs(RotaryEncoder2Val = knob2.read())
+     encoder2_update(RotaryEncoder2Val);
+     
+     
+  if(abs(RotaryEncoder3Val = knob3.read())
+     encoder3_update(RotaryEncoder3Val);
+     
+     
+  //write all zero values so as to allow that deviation from zero to be significant
+  knob1.write(0);
+  knob2.write(0);
+  knob3.write(0);
+ 
   if(backbutton.update())
     if(backbutton.risingEdge())
       back_button();
