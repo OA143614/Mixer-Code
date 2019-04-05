@@ -12,6 +12,16 @@
  *    27 and 28 are the Main and Aux Mix Mute buttons  (latching buttons)
  *    9 and 10, 25 and 26, 54 and 55 are pairs for each of the rotary encoders
  *    33-36 are the four menu  buttons (momentary buttons)
+ *
+ *  Screens
+ *    I2C Bus number zero has SCL on pin 7 and SDA on pin 8
+ *    I2C Bus number one has SCL on pin 37 and SDA on pin 38
+ *    I2C Bus number two has SCL on pin 3 and SDA on pin 4
+ *    I2C Bus number three has SCL on pin 57 and SDA on pin 56
+ * 
+ *    SPI bus number 0 has MOSI on pin 11, MISO on pin 12, SCK on pin 13
+ *    SPI bus number 1 has MOSI on pin 0, MISO on pin 1, SCK on pin 32
+ *    SPI bus number 2 has MOSI on pin 44, MISO on pin 45, SCK on pin 46
 */
 
 #include <FrequencyTimer2.h>
