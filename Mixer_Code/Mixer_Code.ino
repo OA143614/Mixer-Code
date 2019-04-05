@@ -56,9 +56,44 @@ int RotaryEncoder1Val;
 int RotaryEncoder2Val;
 int RotaryEncoder3Val;
 
+//filter coefficients
+//how do these look, how many are there, where are they kept
+
+
+#define NUM_SAMPLES 20 //is this enough
+
+//these will be circular buffers used to draw out the waveform
+uint16_t channel1_samples[NUM_SAMPLES];
+int channel1_samples_current_index;
+
+uint16_t channel2_samples[NUM_SAMPLES];
+int channel2_samples_current_index;
+
+uint16_t channel3_samples[NUM_SAMPLES];
+int channel3_samples_current_index;
+
+uint16_t channel4_samples[NUM_SAMPLES];
+int channel4_samples_current_index;
+
+
 void setup() 
 {//initialization and setup of all initial values and initial state
+ 
+  channel1_samples_current_index = 0;
+  channel2_samples_current_index = 0;
+  channel3_samples_current_index = 0;
+  channel4_samples_current_index = 0;
   
+  //initializing the circular buffers associated with each of the input channels
+  //these values will be used to draw out the waveform
+  for(int i = 0; i < NUM_SAMPLES; i++)
+  {
+    channel1_samples[i] = 0;
+    channel2_samples[i] = 0;
+    channel3_samples[i] = 0;
+    channel4_samples[i] = 0;
+  }
+ 
   //set up encoders
   Encoder knob1(9, 10);
   Encoder knob2(25, 26);
@@ -68,10 +103,7 @@ void setup()
   knob1.write(0);
   knob2.write(0);
   knob3.write(0);
-  //should this happen again when we enter a new menu state?
-  
    
-  
   //set up bounce library for the 4 menu buttons
   Bounce backbutton = Bounce(33, 10); 
   Bounce nextbutton = Bounce(34, 10); 
@@ -108,13 +140,32 @@ void sample()
   input1 = SPI.transfer16(0);
   SPI.endTransaction();
   digitalWrite(33, LOW);
-  Serial.println(input1);
+  
+  //apply parametric eq for input 1
+  //apply parametric eq for input 2
+  //apply parametric eq for input 3
+  //apply parametric eq for input 4
+  
+  //apply compression for input 1
+  //apply compression for input 2
+  //apply compression for input 3
+  //apply compression for input 4
+  
+  //do the mixing operation for main mix
+  //do the mixing operation for aux mix
+  
+  //apply graphic eq to main mix
+  //apply graphic eq to aux mix
+  
+  //apply compression to main mix
+  //apply compression to aux mix
+  
 }
 
 //the menu to be displayed on the larger screen is structured as follows
 // 1 - the welcome screen
-// 2,3,4,5 - the top level menu options (Parametric eq, graphic eq, compression, monitor channel select)
-// 6,7,8 - the bands of the parametric eq (band 1, band 2, band 3)
+// 2,3,4,5 - the top level menu options (Parametric eq, graphic eq, compression, monitor channel select) - enter to toggle main/aux
+// 6,7,8 - the bands of the parametric eq (band 1, band 2, band 3) - enter to toggle main/aux
 // 9 - the graphic eq bands (three bands adjusted by the three knobs)
 // 10-15 - the different channels in the compression menu (in1, in2, in3, in4, mainout, auxout, in order)
 // 16-21 - the monitor channel selections (in1, in2, in3, in4, mainout, auxout, in order)
@@ -212,14 +263,63 @@ void enter_button()
   }
 }
 
-void peakfiltercalc()
+void peakfiltercalc(int number, int dBgain, int freq, int Q)
 {
+  int srate = 44100;
   
+  double A = pow(10, dBgain / 40);
+  double O = 2 * 3.14159 * (freq / srate);
+  
+  double sn = sin(O);
+  double cs = cos(O);
+  
+  double alpha = sn / (2 * Q);
+  double beta = sqrt(2 * A);
+  
+  double b0 = 1 + (alpha * A);
+  double b1 = -2 * cs;
+  double b2 = 1 - (alpha * A);
+  double a0 = 1 + (alpha / A);
+  double a1 = -2 * cs;
+  double a2 = 1 - (alpha / A);
+  
+  
+  //return these, or pass them in by reference
+  double c0 = b0 / a0;
+  double c1 = b1 / a0;
+  double c2 = b2 / a0;
+  double c3 = a1 / a0;
+  double c4 = a2 / a0;
+
 }
   
-void notchfiltercalc()
+void notchfiltercalc(int number, int dBgain, int freq, int Q)
 {
+  int srate = 44100;
   
+  double A = pow(10, dBgain / 40);
+  double O = 2 * 3.14159 * (freq / srate);
+  
+  double sn = sin(O);
+  double cs = cos(O);
+  
+  double alpha = sn / (2 * Q);
+  double beta = sqrt(2 * A);
+    
+  double b0 = 1;
+  double b1 = -2 * cs;
+  double b2 = 1;
+  double a0 = 1 + alpha;
+  double a1 = -2 * cs;
+  double a2 = 1 - alpha;
+  
+  
+  //return these, or have values in by reference
+  double c0 = b0 / a0;
+  double c1 = b1 / a0;
+  double c2 = b2 / a0;
+  double c3 = a1 / a0;
+  double c4 = a2 / a0;
 }
 
 void poll_controls()
@@ -229,13 +329,13 @@ void poll_controls()
   Channel2Fader = analogRead(15);
   Channel3Fader = analogRead(16);
   Channel4Fader = analogRead(17);
-  mainOutFader    = analogRead(18);
-  auxOutFader    = analogRead(19);
-  Channel1AuxLevel= analogRead(20);
-  Channel2AuxLevel= analogRead(21);
-  Channel3AuxLevel= analogRead(22);
-  Channel4AuxLevel= analogRead(23);
-  HeadphoneVolumeControl= analogRead(49);
+  mainOutFader = analogRead(18);
+  auxOutFader = analogRead(19);
+  Channel1AuxLevel = analogRead(20);
+  Channel2AuxLevel = analogRead(21);
+  Channel3AuxLevel = analogRead(22);
+  Channel4AuxLevel = analogRead(23);
+  HeadphoneVolumeControl = analogRead(49);
   Channel1MuteButton  = digitalRead(29);
   Channel2MuteButton  = digitalRead(30);
   Channel3MuteButton  = digitalRead(31);
@@ -245,16 +345,16 @@ void poll_controls()
   
 
   //if(abs(val=knob.read())) - if the read returns a nonzero value, this if statement will evaluate to true.
-    //positive integers make if evaluate true - the value is significant whether it is positive or negative, thus, abs()
-  if(abs(RotaryEncoder1Val = knob1.read())
+    //positive integers make if evaluate true - the value is significant if it is nonzero, positive or negative, thus, abs()
+  if(abs(RotaryEncoder1Val = knob1.read()))
      encoder1_update(RotaryEncoder1Val);//update the values, based upon the current menustate
      
      
-  if(abs(RotaryEncoder2Val = knob2.read())
+  if(abs(RotaryEncoder2Val = knob2.read()))
      encoder2_update(RotaryEncoder2Val);
      
      
-  if(abs(RotaryEncoder3Val = knob3.read())
+  if(abs(RotaryEncoder3Val = knob3.read()))
      encoder3_update(RotaryEncoder3Val);
      
      
@@ -371,17 +471,17 @@ update_screens()
       break;
     case 15://show the aux output compression options
       break;
-    case 16:
+    case 16://show the option to select input 1 for the headphone monitor
       break;
-    case 17:
+    case 17://show the option to select input 2 for the headphone monitor
       break;
-    case 18:
+    case 18://show the option to select input 3 for the headphone monitor
       break;
-    case 19:
+    case 19://show the option to select input 4 for the headphone monitor
       break;
-    case 20:
+    case 20://show the option to select main output for the headphone monitor
       break;
-    case 21:
+    case 21://show the option to select aux output for the headphone monitor
       break;
     default:
       break;
