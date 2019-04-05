@@ -87,7 +87,7 @@ void setup()
   //initializing the circular buffers associated with each of the input channels
   //these values will be used to draw out the waveform
   for(int i = 0; i < NUM_SAMPLES; i++)
-  {
+  {//initialize with zeroes
     channel1_samples[i] = 0;
     channel2_samples[i] = 0;
     channel3_samples[i] = 0;
