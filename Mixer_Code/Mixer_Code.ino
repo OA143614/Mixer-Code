@@ -30,6 +30,8 @@
 #include <Encoder.h>
 #include <Bounce.h>
 #include <math.h>
+#include "Adafruit_GFX.h"
+#include "Adafruit_HX8357.h"
 
 //this integer holds the current state of the menu
 int menustate;
@@ -68,10 +70,16 @@ int RotaryEncoder3Val;
 
 //filter coefficients
 //how do these look, how many are there, where are they kept
-
+//define main display
+#define TFT_CS 31
+#define TFT_DC 30
+#define MOSI 0
+#define SCK 32
+#define TFT_RST 29 // RST can be set to -1 if you tie it to Arduino's reset
+#define MISO 1
 
 #define NUM_SAMPLES 20 //is this enough
-
+Adafruit_HX8357 tft = Adafruit_HX8357(TFT_CS, TFT_DC, MOSI, SCK, TFT_RST, MISO);
 //these will be circular buffers used to draw out the waveform
 uint16_t channel1_samples[NUM_SAMPLES];
 int channel1_samples_current_index;
@@ -121,7 +129,12 @@ void setup()
   Bounce entrbutton = Bounce(36, 10);
   
   //set up screens
-  
+  Serial.begin(9600);
+   tft.begin();
+  uint8_t   x = tft.readcommand8(HX8357_RDDIM);
+ Serial.print("MADCTL Mode: 0x"); Serial.println(x, HEX);
+ tft.fillScreen(HX8357_WHITE);
+  tft.setRotation(1);
   //poll initial values of all controls
   poll_controls();
 
@@ -452,46 +465,109 @@ update_screens()
   switch(menustate)
   {
     case 1://show the welcome screen
+     setTextSize(5);
+    setTextColor(HX8357_BLACK);
+    println("WELCOME");
       break;
     case 2://show the parametric EQ top level menu option
+    setTextSize(5);
+    setTextColor(HX8357_BLACK);
+    println("the parametric EQ top level")
       break;
     case 3://show the graphic EQ top level menu option
+    setTextSize(5);
+    setTextColor(HX8357_BLACK);
+    println("the graphic EQ top level");
       break;
     case 4://show the compression top level menu option
+    setTextSize(5);
+    setTextColor(HX8357_BLACK);
+    println("the compression top level");
       break;
     case 5://show the monitor channel select top level menu option
+     setTextSize(5);
+    setTextColor(HX8357_BLACK);
+    println("the monitor channel select top level");
       break;
     case 6://show the band 1 parametric EQ selection
+    setTextSize(5);
+    setTextColor(HX8357_BLACK);
+    println("the band 1");
       break;
     case 7://show the band 2 parametric EQ selection
+    setTextSize(5);
+    setTextColor(HX8357_BLACK);
+    println("the band 2");
       break;
     case 8://show the band 3 parametric EQ selection
+    setTextSize(5);
+    setTextColor(HX8357_BLACK);
+    println("the band 3");
       break;
     case 9://show the bands of the graphic EQ
+    setTextSize(5);
+    setTextColor(HX8357_BLACK);
+    println("the bands of the graphic EQ");
       break;
     case 10://show the input 1 compression options
+    setTextSize(5);
+    setTextColor(HX8357_BLACK);
+    println("the input 1");
       break;
     case 11://show the input 2 compression options
+    setTextSize(5);
+    setTextColor(HX8357_BLACK);
+    println("the input 2 ");
       break;
     case 12://show the input 3 compression options
+    setTextSize(5);
+    setTextColor(HX8357_BLACK);
+    println("the input 3");
       break;
     case 13://show the input 4 compression options
+    setTextSize(5);
+    setTextColor(HX8357_BLACK);
+    println("the input 4 ");
       break;
     case 14://show the main output compression options
+    setTextSize(5);
+    setTextColor(HX8357_BLACK);
+    println("the main output");
       break;
     case 15://show the aux output compression options
+    setTextSize(5);
+    setTextColor(HX8357_BLACK);
+    println("the aux output");
       break;
     case 16://show the option to select input 1 for the headphone monitor
+    setTextSize(5);
+    setTextColor(HX8357_BLACK);
+    println("the option to select input 1");
       break;
     case 17://show the option to select input 2 for the headphone monitor
+    setTextSize(5);
+    setTextColor(HX8357_BLACK);
+    println("the option to select input 2");
       break;
     case 18://show the option to select input 3 for the headphone monitor
+    setTextSize(5);
+    setTextColor(HX8357_BLACK);
+    println("the option to select input 3");
       break;
     case 19://show the option to select input 4 for the headphone monitor
+    setTextSize(5);
+    setTextColor(HX8357_BLACK);
+    println("the option to select input 4");
       break;
     case 20://show the option to select main output for the headphone monitor
+     setTextSize(5);
+    setTextColor(HX8357_BLACK);
+    println("the option to select main output ");
       break;
     case 21://show the option to select aux output for the headphone monitor
+    setTextSize(5);
+    setTextColor(HX8357_BLACK);
+    println("the option to select aux output");
       break;
     default:
       break;
