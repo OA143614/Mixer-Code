@@ -35,6 +35,7 @@
 #include "Adafruit_SSD1306.h"
 
 int spi_speed = 30000000;
+IntervalTimer ADCtimer;
 
 //this integer holds the current state of the menu
 int menustate;
@@ -147,12 +148,15 @@ void setup()
   //initialize filters with zero values
   //look at the MATLAB code for the eq
 
-  //setup the timed interrupt with FrequencyTimer2
-  pinMode(FREQUENCYTIMER2_PIN, OUTPUT);
-  FrequencyTimer2::setPeriod(22);
-  FrequencyTimer2::enable();
-  FrequencyTimer2::setOnOverflow(sample);
-  
+  //setup the timed interrupt with intervaltimer
+  ADCtimer.begin(sample,21);
+ 
+ 
+ //initalize DAC
+  analogWriteFrequency(A21,4000000);
+  analogWriteFrequency(A22,4000000);
+  analogWriteResolution(16);
+ 
   menustate = 1;
 }
 
@@ -168,6 +172,9 @@ void sample()
   delayMicroseconds(1);
   SPI.beginTransaction(SPISettings(spi_speed, MSBFIRST, SPI_MODE0));
   input1 = SPI.transfer16(0);
+  input2 = SPI.transfer16(0);
+  input3 = SPI.transfer16(0);
+  input4 = SPI.transfer16(0);
   SPI.endTransaction();
   digitalWrite(33, LOW);
   
