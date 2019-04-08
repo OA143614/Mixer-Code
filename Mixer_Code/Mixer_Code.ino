@@ -471,109 +471,109 @@ update_screens()
   switch(menustate)
   {
     case 1://show the welcome screen
-      setTextSize(5);
-      setTextColor(HX8357_BLACK);
-      println("WELCOME");
+      tft.setTextSize(5);
+      tft.setTextColor(HX8357_BLACK);
+      tft.println("WELCOME");
       break;
     case 2://show the parametric EQ top level menu option
-      setTextSize(5);
-      setTextColor(HX8357_BLACK);
-      println("Parametric EQ");
+      tft.setTextSize(5);
+      tft.setTextColor(HX8357_BLACK);
+      tft.println("Parametric EQ");
       break;
     case 3://show the graphic EQ top level menu option
-      setTextSize(5);
-      setTextColor(HX8357_BLACK);
-      println("Graphic EQ");
+      tft.setTextSize(5);
+      tft.setTextColor(HX8357_BLACK);
+      tft.println("Graphic EQ");
       break;
     case 4://show the compression top level menu option
-      setTextSize(5);
-      setTextColor(HX8357_BLACK);
-      println("Compression");
+      tft.setTextSize(5);
+      tft.setTextColor(HX8357_BLACK);
+      tft.println("Compression");
       break;
     case 5://show the monitor channel select top level menu option
-      setTextSize(5);
-      setTextColor(HX8357_BLACK);
-      println("Monitor Channel Select");
+      tft.setTextSize(5);
+      tft.setTextColor(HX8357_BLACK);
+      tft.println("Monitor Channel Select");
       break;
     case 6://show the band 1 parametric EQ selection
-      setTextSize(5);
-      setTextColor(HX8357_BLACK);
-      println("Band 1");
+      tft.setTextSize(5);
+      tft.setTextColor(HX8357_BLACK);
+      tft.println("Band 1");
       break;
     case 7://show the band 2 parametric EQ selection
-      setTextSize(5);
-      setTextColor(HX8357_BLACK);
-      println("Band 2");
+      tft.setTextSize(5);
+      tft.setTextColor(HX8357_BLACK);
+      tft.println("Band 2");
       break;
     case 8://show the band 3 parametric EQ selection
-      setTextSize(5);
-      setTextColor(HX8357_BLACK);
-      println("Band 3");
+      tft.setTextSize(5);
+      tft.setTextColor(HX8357_BLACK);
+      tft.println("Band 3");
       break;
     case 9://show the bands of the graphic EQ
-      setTextSize(5);
-      setTextColor(HX8357_BLACK);
-      println("Graphic EQ Bands");
+      tft.setTextSize(5);
+      tft.setTextColor(HX8357_BLACK);
+      tft.println("Graphic EQ Bands");
       break;
     case 10://show the input 1 compression options
-      setTextSize(5);
-      setTextColor(HX8357_BLACK);
-      println("Compression Settings - Input 1");
+      tft.setTextSize(5);
+      tft.setTextColor(HX8357_BLACK);
+      tft.println("Compression Settings - Input 1");
       break;
     case 11://show the input 2 compression options
-      setTextSize(5);
-      setTextColor(HX8357_BLACK);
-      println("Compression Settings - Input 2");
+      tft.setTextSize(5);
+      tft.setTextColor(HX8357_BLACK);
+      tft.println("Compression Settings - Input 2");
       break;
     case 12://show the input 3 compression options
-      setTextSize(5);
-      setTextColor(HX8357_BLACK);
-      println("Compression Settings - Input 3");
+      tft.setTextSize(5);
+      tft.setTextColor(HX8357_BLACK);
+      tft.println("Compression Settings - Input 3");
       break;
     case 13://show the input 4 compression options
-      setTextSize(5);
-      setTextColor(HX8357_BLACK);
-      println("Compression Settings - Input 4");
+      tft.setTextSize(5);
+      tft.setTextColor(HX8357_BLACK);
+      tft.println("Compression Settings - Input 4");
       break;
     case 14://show the main output compression options
-      setTextSize(5);
-      setTextColor(HX8357_BLACK);
-      println("Compression Settings - Main Output");
+      tft.setTextSize(5);
+      tft.setTextColor(HX8357_BLACK);
+      tft.println("Compression Settings - Main Output");
       break;
     case 15://show the aux output compression options
-      setTextSize(5);
-      setTextColor(HX8357_BLACK);
-      println("Compression Settings - Aux Output");
+      tft.setTextSize(5);
+      tft.setTextColor(HX8357_BLACK);
+      tft.println("Compression Settings - Aux Output");
       break;
     case 16://show the option to select input 1 for the headphone monitor
-      setTextSize(5);
-      setTextColor(HX8357_BLACK);
-      println("Input 1");
+      tft.setTextSize(5);
+      tft.setTextColor(HX8357_BLACK);
+      tft.println("Input 1");
       break;
     case 17://show the option to select input 2 for the headphone monitor
-      setTextSize(5);
-      setTextColor(HX8357_BLACK);
-      println("Input 2");
+      tft.setTextSize(5);
+      tft.setTextColor(HX8357_BLACK);
+      tft.println("Input 2");
       break;
     case 18://show the option to select input 3 for the headphone monitor
-      setTextSize(5);
-      setTextColor(HX8357_BLACK);
-      println("Input 3");
+      tft.setTextSize(5);
+      tft.setTextColor(HX8357_BLACK);
+      tft.println("Input 3");
       break;
     case 19://show the option to select input 4 for the headphone monitor
-      setTextSize(5);
-      setTextColor(HX8357_BLACK);
-      println("Input 4");
+      tft.setTextSize(5);
+      tft.setTextColor(HX8357_BLACK);
+      tft.println("Input 4");
       break;
     case 20://show the option to select main output for the headphone monitor
-      setTextSize(5);
-      setTextColor(HX8357_BLACK);
-      println("Main Output");
+      tft.setTextSize(5);
+      tft.setTextColor(HX8357_BLACK);
+      tft.println("Main Output");
       break;
     case 21://show the option to select aux output for the headphone monitor
-      setTextSize(5);
-      setTextColor(HX8357_BLACK);
-      println("Aux Output");
+      tft.setTextSize(5);
+      tft.setTextColor(HX8357_BLACK);
+      tft.println("Aux Output");
       break;
     default:
       break;
