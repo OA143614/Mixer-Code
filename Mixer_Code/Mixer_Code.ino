@@ -34,6 +34,8 @@
 #include "Adafruit_HX8357.h"
 #include "Adafruit_SSD1306.h"
 
+int spi_speed = 30000000;
+
 //this integer holds the current state of the menu
 int menustate;
 
@@ -163,6 +165,7 @@ volatile uint16_t current_sample4;
 void sample()
 {//this function is attached to the timed interrupt
   digitalWrite(33, HIGH);
+  delayMicroseconds(1);
   SPI.beginTransaction(SPISettings(spi_speed, MSBFIRST, SPI_MODE0));
   input1 = SPI.transfer16(0);
   SPI.endTransaction();
@@ -322,7 +325,7 @@ void peakfiltercalc(int number, int dBgain, int freq, int Q)
   
 void notchfiltercalc(int number, int dBgain, int freq, int Q)
 {
-  int srate = 44100;
+  int srate = 48000;
   
   double A = pow(10, dBgain / 40);
   double O = 2 * 3.14159 * (freq / srate);
@@ -438,6 +441,7 @@ void poll_controls()
 
 encoder1_update(int increment)
 {
+  knob1.write(0);
    switch(menustate)
    {
 
@@ -447,6 +451,7 @@ encoder1_update(int increment)
 }
 encoder2_update(int increment)
 {
+ knob2.write(0);
   switch(menustate)
   {
       
@@ -456,6 +461,7 @@ encoder2_update(int increment)
 }
 encoder3_update(int increment)
 {
+ knob3.write(0);
   switch(menustate)
   {
       
@@ -466,7 +472,6 @@ encoder3_update(int increment)
      
 update_screens()
 {
- 
   tft.fillScreen(HX8357_WHITE);
   switch(menustate)
   {
