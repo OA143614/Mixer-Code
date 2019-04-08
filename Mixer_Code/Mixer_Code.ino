@@ -168,15 +168,17 @@ volatile uint16_t current_sample4;
 
 void sample()
 {//this function is attached to the timed interrupt
-  digitalWrite(33, HIGH);
+  digitalWrite(33, HIGH);//begin converting
   delayMicroseconds(1);
   SPI.beginTransaction(SPISettings(spi_speed, MSBFIRST, SPI_MODE0));
-  input1 = SPI.transfer16(0);
-  input2 = SPI.transfer16(0);
-  input3 = SPI.transfer16(0);
-  input4 = SPI.transfer16(0);
+ 
+  current_sample1 = SPI.transfer16(0);
+  current_sample2 = SPI.transfer16(0);
+  current_sample3 = SPI.transfer16(0);
+  current_sample4 = SPI.transfer16(0);
+ 
   SPI.endTransaction();
-  digitalWrite(33, LOW);
+  digitalWrite(33, LOW);//converting finished
   
   //apply parametric eq for input 1
   //apply parametric eq for input 2
