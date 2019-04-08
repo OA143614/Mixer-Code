@@ -466,11 +466,11 @@ encoder3_update(int increment)
      
 update_screens()
 {
+ 
+  tft.fillScreen(HX8357_WHITE);
   switch(menustate)
   {
     case 1://show the welcome screen
-
-      tft.fillScreen(HX8357_WHITE);
       setTextSize(5);
       setTextColor(HX8357_BLACK);
       println("WELCOME");
