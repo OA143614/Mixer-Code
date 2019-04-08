@@ -32,6 +32,7 @@
 #include <math.h>
 #include "Adafruit_GFX.h"
 #include "Adafruit_HX8357.h"
+#include "Adafruit_SSD1306.h"
 
 //this integer holds the current state of the menu
 int menustate;
@@ -77,7 +78,7 @@ int RotaryEncoder3Val;
 #define TFT_DC 30
 #define MOSI 0
 #define SCK 32
-#define TFT_RST 29 // RST can be set to -1 if you tie it to Arduino's reset
+#define TFT_RST -1 // RST can be set to -1 if you tie it to Arduino's reset
 #define MISO 1
 #define NUM_SAMPLES 20 //is this enough
 Adafruit_HX8357 tft = Adafruit_HX8357(TFT_CS, TFT_DC, MOSI, SCK, TFT_RST, MISO);
