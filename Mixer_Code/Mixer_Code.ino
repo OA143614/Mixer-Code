@@ -30,9 +30,15 @@
 #include <Encoder.h>
 #include <Bounce.h>
 #include <math.h>
+#include <Wire.h>
+
 #include "Adafruit_GFX.h"
-#include "Adafruit_HX8357.h"
-#include "Adafruit_SSD1306.h"
+#include "Adafruit_HX8357.h" //big screen
+#include "Adafruit_SSD1306.h" //small screens
+#include "Adafruit_TPA2016.h" //class d amps
+
+Adafruit_TPA2016 main_and_aux_mix_amp = Adafruit_TPA2016();
+Adafruit_TPA2016 headphone_amp = Adafruit_TPA2016();
 
 int spi_speed = 30000000;
 IntervalTimer ADC_timed_interrupt;
@@ -106,6 +112,10 @@ uint16_t channel4_samples[NUM_SAMPLES];
 
 void setup() 
 {//initialization and setup of all initial values and initial state
+ 
+ 
+  main_and_aux_mix_amp.begin(TPA2016_I2CADDR,&Wire);
+  headphone_amp.begin(TPA2016_I2CADDR,&Wire1); //handles these two on separate i2c busses since they have the same address
  
   samples_buffer_current_index = 0;
   
