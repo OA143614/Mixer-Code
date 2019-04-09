@@ -37,9 +37,6 @@
 #include "Adafruit_SSD1306.h" //small screens
 #include "Adafruit_TPA2016.h" //class d amps
 
-Adafruit_TPA2016 main_and_aux_mix_amp = Adafruit_TPA2016();
-Adafruit_TPA2016 headphone_amp = Adafruit_TPA2016();
-
 int spi_speed = 30000000;
 IntervalTimer ADC_timed_interrupt;
 
@@ -101,6 +98,20 @@ Adafruit_HX8357 tft = Adafruit_HX8357(TFT_CS, TFT_DC, MOSI, SCK, TFT_RST, MISO);
 
 
 
+#define SCREEN_WIDTH 128 // OLED display width, in pixels
+#define SCREEN_HEIGHT 64 // OLED display height, in pixels
+#define OLED_RESET     -1
+
+Adafruit_SSD1306 Channel_1_display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
+Adafruit_SSD1306 Channel_2_display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
+Adafruit_SSD1306 Channel_3_display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire1, OLED_RESET);
+Adafruit_SSD1306 Channel_4_display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire1, OLED_RESET);
+Adafruit_SSD1306 Output_display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire2, OLED_RESET);
+
+Adafruit_TPA2016 main_and_aux_mix_amp = Adafruit_TPA2016();
+Adafruit_TPA2016 headphone_amp = Adafruit_TPA2016();
+
+
 
 #define NUM_SAMPLES 20 //is this enough?
 
@@ -113,6 +124,12 @@ uint16_t channel4_samples[NUM_SAMPLES];
 void setup() 
 {//initialization and setup of all initial values and initial state
  
+  //Initialize screens
+  Channel_1_display.begin(SSD1306_SWITCHCAPVCC, 0x3C);
+  Channel_2_display.begin(SSD1306_SWITCHCAPVCC, 0x3D);
+  Channel_3_display.begin(SSD1306_SWITCHCAPVCC, 0x3C);
+  Channel_4_display.begin(SSD1306_SWITCHCAPVCC, 0x3D);
+  Output_display.begin(SSD1306_SWITCHCAPVCC, 0x3C);
  
   main_and_aux_mix_amp.begin(TPA2016_I2CADDR,&Wire);
   headphone_amp.begin(TPA2016_I2CADDR,&Wire1); //handles these two on separate i2c busses since they have the same address
@@ -378,40 +395,36 @@ void enter_button()
       break;
   }
 }
-
-void peakfiltercalc(int number, int dBgain, int freq, int Q)
+void peakfiltercalc(double dBgain, double freq, double Q, double &c0, double &c1, double &c2, double &c3, double &c4)
 {
-  int srate = 44100;
+  double srate = 48000;
   
-  double A = pow(10, dBgain / 40);
-  double O = 2 * 3.14159 * (freq / srate);
-  
-  double sn = sin(O);
-  double cs = cos(O);
-  
-  double alpha = sn / (2 * Q);
-  double beta = sqrt(2 * A);
-  
-  double b0 = 1 + (alpha * A);
-  double b1 = -2 * cs;
-  double b2 = 1 - (alpha * A);
-  double a0 = 1 + (alpha / A);
-  double a1 = -2 * cs;
-  double a2 = 1 - (alpha / A);
-  
-  
-  //return these, or pass them in by reference
-  double c0 = b0 / a0;
-  double c1 = b1 / a0;
-  double c2 = b2 / a0;
-  double c3 = a1 / a0;
-  double c4 = a2 / a0;
+  double A = pow(10, (dBgain / 40));
+    double b0, b1, b2, a0, a1, a2;
+    double omega = 2 * 3.14159 * (freq / srate);
+    double sn = sin(omega);
+    double cs = cos(omega);
+    double alpha = sn / (2 * Q);
+    double beta = sqrt(2 * A);
+   
+     b0 = 1 + (alpha * A);
+     b1 = -2 * cs;
+     b2 = 1 - (alpha * A);
+     a0 = 1 + (alpha / A);
+     a1 = -2 * cs;
+     a2 = 1 - (alpha / A);
+    
+    c0 = b0 / a0;
+    c1 = b1 / a0;
+    c2 = b2 / a0;
+    c3 = a1 / a0;
+    c4 = a2 / a0;
 
 }
   
-void notchfiltercalc(int number, int dBgain, int freq, int Q)
+void notchfiltercalc(double freq, double Q, double &c0, double &c1, double &c2, double &c3, double &c4)
 {
-  int srate = 48000;
+  double srate = 48000;
   
   double A = pow(10, dBgain / 40);
   double O = 2 * 3.14159 * (freq / srate);
@@ -436,6 +449,68 @@ void notchfiltercalc(int number, int dBgain, int freq, int Q)
   double c2 = b2 / a0;
   double c3 = a1 / a0;
   double c4 = a2 / a0;
+}
+
+void lowshelffiltercalc(double dBgain, double freq, double &c0, double &c1, double &c2, double &c3, double &c4){
+     double srate = 48000;
+
+     double A = pow(10, (dBgain / 40));
+     double b0, b1, b2, a0, a1, a2;
+     double omega = 2 * 3.14159 * (freq / srate);
+     double sn = sin(omega);
+     double cs = cos(omega);
+
+     double beta = sqrt(2 * A);
+
+     b0 = A*[ (A+1) - (A-1)*cs + beta*sn ];
+     b1 = 2*A*[ (A-1) - (A+1)*cs ];
+     b2 = A*[ (A+1) - (A-1)*cs - beta*sn ];
+     a0 = (A+1) + (A-1)*cs + beta*sn;
+     a1 = -2*[ (A-1) + (A+1)*cs ];
+     a2 = (A+1) + (A-1)*cs - beta*sn;
+
+
+
+
+     double c0 = b0 / a0;
+     double c1 = b1 / a0;
+     double c2 = b2 / a0;
+     double c3 = a1 / a0;
+     double c4 = a2 / a0;
+}
+
+void highshelffiltercalc(double dBgain, double freq, double &c0, double &c1, double &c2, double &c3, double &c4){
+    double srate = 48000;
+  
+    double A = pow(10, (dBgain / 40));
+    double b0, b1, b2, a0, a1, a2;
+    double omega = 2 * 3.14159 * (freq / srate);
+    double sn = sin(omega);
+    double cs = cos(omega);
+    
+    double beta = sqrt(2 * A);
+
+    b0 = A*[ (A+1) - (A-1)*cs + beta*sn ];
+    b1 = -2*A*[ (A-1) - (A+1)*cs ];
+    b2 = A*[ (A+1) - (A-1)*cs - beta*sn ];
+    a0 = (A+1) + (A-1)*cs + beta*sn;
+    a1 = 2*[ (A-1) + (A+1)*cs ];
+    a2 = (A+1) + (A-1)*cs - beta*sn;
+
+    double c0 = b0 / a0;
+    double c1 = b1 / a0;
+    double c2 = b2 / a0;
+    double c3 = a1 / a0;
+    double c4 = a2 / a0;
+}
+
+uint16_t apply_filter(uint16_t inp, uint16_t &x1, uint16_t &x2, uint16_t &y1, uint16_t &y2, double c0, double c1, double c2, double c3, double c4){
+  uint16_t output1 = (((c0 * ((inp))) + (c1 * ((x1))) + (c2 * ((x2))) - (c3 * ((y1))) - (c4 * ((y2)))));
+  x2 = (x1);
+  x1 = (inp);
+  y2 = (y1);
+  y_1 = (output1);
+  return output1;
 }
 
 void poll_controls()
@@ -487,6 +562,22 @@ void poll_controls()
       enter_button();
  
 }      
+
+double scale_fader(uint16_t fader_value){
+   double temp_fader_val = fader_value / 1023;
+   double dBmin = -80;
+   double dBmax = +20;
+   double range = dBmax - dBmin;
+
+   double zeroShape = 10^(dBmin/20);
+   double unityFix = 1 / (1 + zeroShape);
+
+   double scaled_gain = (10^((range*temp_fader_val-dBmin)/20)-zeroShape)*unityFix;
+
+   return scaled_gain;
+  
+}
+     
      
 //Encoder update functions - 
      //these will need to be sensitive to the current state of the menu, 
