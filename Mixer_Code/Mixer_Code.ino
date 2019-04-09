@@ -131,6 +131,14 @@ void setup()
   Channel_4_display.begin(SSD1306_SWITCHCAPVCC, 0x3D);
   Output_display.begin(SSD1306_SWITCHCAPVCC, 0x3C);
  
+  Channel_1_display.clearDisplay();
+  Channel_2_display.clearDisplay();
+  Channel_3_display.clearDisplay();
+  Channel_4_display.clearDisplay();
+  Output_display.clearDisplay();
+ 
+  
+ 
   main_and_aux_mix_amp.begin(TPA2016_I2CADDR,&Wire);
   headphone_amp.begin(TPA2016_I2CADDR,&Wire1); //handles these two on separate i2c busses since they have the same address
  
@@ -223,7 +231,7 @@ void sample()
     samples_buffer_current_index = 0;
  
  
-  //How are we going to do all these?
+  //How are we doing all these?
   
   //apply parametric eq for input 1
   //apply parametric eq for input 2
@@ -278,7 +286,7 @@ void sample()
 // 6,7,8 - the bands of the parametric eq (band 1, band 2, band 3) - enter to toggle main/aux
 // 9 - the graphic eq bands (three bands adjusted by the three knobs)
 // 10-15 - the different channels in the compression menu (in1, in2, in3, in4, mainout, auxout, in order)
-// 16-21 - the monitor channel selections (in1, in2, in3, in4, mainout, auxout, in order)
+// 16-21,22 - the monitor channel selections (in1, in2, in3, in4, mainout, auxout, and none (22), in order)
 
 void back_button()
 {
@@ -298,7 +306,7 @@ void back_button()
   {//the menu starts in the compression menu - go to the compression top level menu option
     menustate = 4;
   }
-  else if(menustate >= 16 && menustate <= 21)
+  else if(menustate >= 16 && menustate <= 22)
   {//the menu starts in the monitor channel select menu - go to the monitor channel select top level menu option
     menustate = 5;
   }
