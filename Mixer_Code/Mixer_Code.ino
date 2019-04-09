@@ -8,7 +8,7 @@
  *    [A10 or pin 49] is headphone volume control - how do you use pin A10?
  *    
  *  Digital inputs
- *    29,30,31,24 are the Channel 1 to Channel 4 Mutes (latching buttons)
+ *    29,30,31,24 are the Channel 1 to Channel 4 Mutes (latching buttons) - pin 31 is used, we need to move channel 3 mute
  *    27 and 28 are the Main and Aux Mix Mute buttons  (latching buttons)
  *    9 and 10, 25 and 26, 54 and 55 are pairs for each of the rotary encoders
  *    33-36 are the four menu  buttons (momentary buttons)
@@ -74,7 +74,10 @@ int RotaryEncoder3Val;
 
 
 //this allows the user to apply the parametric EQs to each of the input channels
-int currently_selected_channel;
+int currently_selected_menu_channel;
+
+//this keeps the number of the channel that the headphone monitor is tapped into
+int currently_selected_headphone_channel;
 
 //filter coefficients
 //how do these look, how many are there, where are they kept
@@ -82,35 +85,29 @@ int currently_selected_channel;
 
 //define main display
 #define TFT_CS 31
-#define TFT_DC 30
+#define TFT_DC 30 //this needs to change
 #define MOSI 0
 #define SCK 32
 #define TFT_RST -1 // RST can be set to -1 if you tie it to Arduino's reset
 #define MISO 1
-#define NUM_SAMPLES 20 //is this enough
+
 Adafruit_HX8357 tft = Adafruit_HX8357(TFT_CS, TFT_DC, MOSI, SCK, TFT_RST, MISO);
+
+
+
+
+#define NUM_SAMPLES 20 //is this enough?
 
 //these will be circular buffers used to draw out the waveform
 uint16_t channel1_samples[NUM_SAMPLES];
-int channel1_samples_current_index;
-
 uint16_t channel2_samples[NUM_SAMPLES];
-int channel2_samples_current_index;
-
 uint16_t channel3_samples[NUM_SAMPLES];
-int channel3_samples_current_index;
-
 uint16_t channel4_samples[NUM_SAMPLES];
-int channel4_samples_current_index;
-
 
 void setup() 
 {//initialization and setup of all initial values and initial state
  
-  channel1_samples_current_index = 0;
-  channel2_samples_current_index = 0;
-  channel3_samples_current_index = 0;
-  channel4_samples_current_index = 0;
+  samples_buffer_current_index = 0;
   
   //initializing the circular buffers associated with each of the input channels
   //these values will be used to draw out the waveform
@@ -138,8 +135,11 @@ void setup()
   Bounce prevbutton = Bounce(35, 10); 
   Bounce entrbutton = Bounce(36, 10);
  
-  //initialize with the current channel set to 1
-  currently_selected_channel = 1;
+  //initialize with the current channel for the menu set to 1
+  currently_selected_menu_channel = 1;
+ 
+  //initialize the value for the current headphone channel
+  currently_selected_headphone_channel = 0; //not listening to any channel
   
   //set up screens
   tft.begin();
@@ -183,6 +183,20 @@ void sample()
  
   SPI.endTransaction();
   digitalWrite(33, LOW);//converting finished
+ 
+  //store these samples
+  channel1_samples[samples_buffer_current_index] = 0;
+  channel2_samples[samples_buffer_current_index] = 0;
+  channel3_samples[samples_buffer_current_index] = 0;
+  channel4_samples[samples_buffer_current_index] = 0;
+ 
+  //increment the index for the circular buffer, and reset to zero if it is past the bounds
+  samples_buffer_current_index++;
+  if(samples_buffer_current_index == NUM_SAMPLES)
+    samples_buffer_current_index = 0;
+ 
+ 
+  //How are we going to do all these?
   
   //apply parametric eq for input 1
   //apply parametric eq for input 2
@@ -202,6 +216,9 @@ void sample()
   
   //apply compression to main mix
   //apply compression to aux mix
+ 
+  //OUTPUT THE APPROPRIATE CHANNEL FOR THE HEADPHONES
+  //OUTPUT THE MAIN AND AUX MIXES
   
 }
 
@@ -252,7 +269,7 @@ void next_button()
     case 15://wraparound for the compression submenu
       menustate = 10;
       break;
-    case 21://wraparound for the monitor channel select submenu
+    case 22://wraparound for the monitor channel select submenu
       menustate = 16;
       break;
     default://in general, except for the preceding 5 cases, this increments the menustate
@@ -277,7 +294,7 @@ void previous_button()
       menustate = 15
       break;
     case 16://wraparound for the monitor channel select submenu
-      menustate = 21;
+      menustate = 22;
       break;
     default://in general, except for the preceding 5 cases, this decrements the menustate
       menustate--;
@@ -305,10 +322,24 @@ void enter_button()
     case 7:
     case 8:
     case 9://IN THE PARAMETRIC EQ SETTINGS, THIS HAS TO CHANGE THE SELECTED CHANNEL, AS WELL
-      if(currently_selected_channel == 4)
-        currently_selected_channel = 1;
-      else
-        currently_selected_channel++;
+      currently_selected_menu_channel++; //move to the next channel
+      if(currently_selected_menu_channel == 5) //if it's past the end, reset it to the first channel
+        currently_selected_menu_channel = 1;        
+      break;
+   case 16: //set the headphone monitor to listen to input 1
+      break;
+   case 17: //set the headphone monitor to listen to input 2
+      break;
+   case 18: //set the headphone monitor to listen to input 3
+      break;
+   case 19: //set the headphone monitor to listen to input 4
+      break;
+   case 20: //set the headphone monitor to listen to main out
+      break;
+   case 21: //set the headphone monitor to listen to aux out
+      break;
+   case 22: //set the headphone monitor to listen to nothing
+      break;
     default:
       break;
   }
