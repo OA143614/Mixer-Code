@@ -219,6 +219,28 @@ void sample()
  
   //OUTPUT THE APPROPRIATE CHANNEL FOR THE HEADPHONES
   //OUTPUT THE MAIN AND AUX MIXES
+  switch(samples_buffer_current_index){
+   case 1:
+    //output input 1's value
+    break;
+   case 2:
+    //output input 2's value
+    break;
+   case 3:
+    //output input 3's value
+    break;
+   case 4:
+    //output input 4's value
+    break;
+   case 5:
+    //output main output's value
+    break;
+   case 6:
+    //output aux mix's value
+    break;
+   default:
+    break;//i.e. ==0, listening to nothing
+   }
   
 }
 
@@ -327,6 +349,7 @@ void enter_button()
         currently_selected_menu_channel = 1;        
       break;
    case 16: //set the headphone monitor to listen to input 1
+      
       break;
    case 17: //set the headphone monitor to listen to input 2
       break;
@@ -428,16 +451,12 @@ void poll_controls()
 
   //if(abs(val=knob.read())) - if the read returns a nonzero value, this if statement will evaluate to true.
     //positive integers make if evaluate true - the value is significant if it is nonzero, positive or negative, thus, abs()
-  if(abs(RotaryEncoder1Val = knob1.read()))
-     encoder1_update(RotaryEncoder1Val);//update the values, based upon the current menustate
+  if(abs(RotaryEncoder1Val = knob1.read())) encoder1_update(RotaryEncoder1Val);//update the values, based upon the current menustate
      
-     
-  if(abs(RotaryEncoder2Val = knob2.read()))
-     encoder2_update(RotaryEncoder2Val);
-     
-     
-  if(abs(RotaryEncoder3Val = knob3.read()))
-     encoder3_update(RotaryEncoder3Val);
+  if(abs(RotaryEncoder2Val = knob2.read())) encoder2_update(RotaryEncoder2Val);
+    
+  if(abs(RotaryEncoder3Val = knob3.read())) encoder3_update(RotaryEncoder3Val);
+    
      
  
   if(backbutton.update())
@@ -483,13 +502,13 @@ void poll_controls()
      //gain for 'bass', gain for 'mid', gain for 'high'
      
 //compression has 
-     //threshold(dB), ratio, third knob does nothing (or maybe makeup gain)
+     //threshold(dB), ratio, third knob does nothing
      
 
 encoder1_update(int increment)
 {
    knob1.write(0); //write zero value so as to allow that deviation from zero to be significant
-   switch(menustate)
+   switch(menustate)//depends on where you are in the menu
    {
 
      default:
@@ -499,7 +518,7 @@ encoder1_update(int increment)
 encoder2_update(int increment)
 {
   knob2.write(0);//write zero value so as to allow that deviation from zero to be significant
-  switch(menustate)
+  switch(menustate)//depends on where you are in the menu
   {
       
      default:
@@ -509,7 +528,7 @@ encoder2_update(int increment)
 encoder3_update(int increment)
 {
   knob3.write(0);//write zero value so as to allow that deviation from zero to be significant
-  switch(menustate)
+  switch(menustate)//depends on where you are in the menu
   {
       
      default:
@@ -626,6 +645,11 @@ update_screens()
       tft.setTextSize(5);
       tft.setTextColor(HX8357_BLACK);
       tft.println("Aux Output");
+      break;
+    case 22://show the option to turn off the headphone monitor
+      tft.setTextSize(5);
+      tft.setTextColor(HX8357_BLACK);
+      tft.println("None");
       break;
     default:
       break;
