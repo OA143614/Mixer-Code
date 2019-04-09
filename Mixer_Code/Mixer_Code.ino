@@ -142,10 +142,7 @@ void setup()
   currently_selected_channel = 1;
   
   //set up screens
-  Serial.begin(9600);
   tft.begin();
-  uint8_t   x = tft.readcommand8(HX8357_RDDIM);
-  Serial.print("MADCTL Mode: 0x"); Serial.println(x, HEX);
   tft.fillScreen(HX8357_WHITE);
   tft.setRotation(1);
  
@@ -411,11 +408,6 @@ void poll_controls()
   if(abs(RotaryEncoder3Val = knob3.read()))
      encoder3_update(RotaryEncoder3Val);
      
-     
-  //write all zero values so as to allow that deviation from zero to be significant
-  knob1.write(0);
-  knob2.write(0);
-  knob3.write(0);
  
   if(backbutton.update())
     if(backbutton.risingEdge())
@@ -465,7 +457,7 @@ void poll_controls()
 
 encoder1_update(int increment)
 {
-  knob1.write(0);
+   knob1.write(0); //write zero value so as to allow that deviation from zero to be significant
    switch(menustate)
    {
 
@@ -475,7 +467,7 @@ encoder1_update(int increment)
 }
 encoder2_update(int increment)
 {
- knob2.write(0);
+  knob2.write(0);//write zero value so as to allow that deviation from zero to be significant
   switch(menustate)
   {
       
@@ -485,7 +477,7 @@ encoder2_update(int increment)
 }
 encoder3_update(int increment)
 {
- knob3.write(0);
+  knob3.write(0);//write zero value so as to allow that deviation from zero to be significant
   switch(menustate)
   {
       
@@ -502,7 +494,7 @@ update_screens()
     case 1://show the welcome screen
       tft.setTextSize(5);
       tft.setTextColor(HX8357_BLACK);
-      tft.println("WELCOME");
+      tft.println("ALLEN&KEITH\nDIGITAL AUDIO MIXER");
       break;
     case 2://show the parametric EQ top level menu option
       tft.setTextSize(5);
