@@ -218,8 +218,7 @@ void sample()
   //apply compression to aux mix
  
   //OUTPUT THE APPROPRIATE CHANNEL FOR THE HEADPHONES
-  //OUTPUT THE MAIN AND AUX MIXES
-  switch(samples_buffer_current_index){
+  switch(currently_selected_headphone_channel){
    case 1:
     //output input 1's value
     break;
@@ -241,6 +240,8 @@ void sample()
    default:
     break;//i.e. ==0, listening to nothing
    }
+ 
+  //OUTPUT THE MAIN AND AUX MIXES THROUGH THE DAC PINS
   
 }
 
