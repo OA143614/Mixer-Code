@@ -35,7 +35,7 @@
 #include "Adafruit_SSD1306.h"
 
 int spi_speed = 30000000;
-IntervalTimer ADCtimer;
+IntervalTimer ADC_timed_interrupt;
 
 //this integer holds the current state of the menu
 int menustate;
@@ -71,6 +71,10 @@ int auxMixMuteButton;
 int RotaryEncoder1Val;
 int RotaryEncoder2Val;
 int RotaryEncoder3Val;
+
+
+//this allows the user to apply the parametric EQs to each of the input channels
+int currently_selected_channel;
 
 //filter coefficients
 //how do these look, how many are there, where are they kept
@@ -133,6 +137,9 @@ void setup()
   Bounce nextbutton = Bounce(34, 10); 
   Bounce prevbutton = Bounce(35, 10); 
   Bounce entrbutton = Bounce(36, 10);
+ 
+  //initialize with the current channel set to 1
+  currently_selected_channel = 1;
   
   //set up screens
   Serial.begin(9600);
@@ -149,7 +156,7 @@ void setup()
   //look at the MATLAB code for the eq
 
   //setup the timed interrupt with intervaltimer
-  ADCtimer.begin(sample,21);
+  ADC_timed_interrupt.begin(sample,21);
  
  
  //initalize DAC
@@ -297,6 +304,14 @@ void enter_button()
     case 5://you are selecting the monitor channel select submenu
       menustate = 16;
       break;
+    case 6:
+    case 7:
+    case 8:
+    case 9://IN THE PARAMETRIC EQ SETTINGS, THIS HAS TO CHANGE THE SELECTED CHANNEL, AS WELL
+      if(currently_selected_channel == 4)
+        currently_selected_channel = 1;
+      else
+        currently_selected_channel++;
     default:
       break;
   }
