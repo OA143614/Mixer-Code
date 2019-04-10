@@ -86,6 +86,19 @@ int currently_selected_headphone_channel;
 //how do these look, how many are there, where are they kept
 
 
+//set up encoders
+Encoder knob1(9, 10);
+Encoder knob2(25, 26);
+Encoder knob3(54, 55);
+
+//set up bounce library for the 4 menu buttons
+Bounce backbutton = Bounce(33, 10); 
+Bounce nextbutton = Bounce(34, 10); 
+Bounce prevbutton = Bounce(35, 10); 
+Bounce entrbutton = Bounce(36, 10);
+
+
+
 //define main display
 #define TFT_CS 31
 #define TFT_DC 30 //this needs to change
@@ -121,6 +134,8 @@ uint16_t channel2_samples[NUM_SAMPLES];
 uint16_t channel3_samples[NUM_SAMPLES];
 uint16_t channel4_samples[NUM_SAMPLES];
 
+int samples_buffer_current_index;
+
 void setup() 
 {//initialization and setup of all initial values and initial state
  
@@ -154,21 +169,18 @@ void setup()
     channel4_samples[i] = 0;
   }
  
-  //set up encoders
-  Encoder knob1(9, 10);
-  Encoder knob2(25, 26);
-  Encoder knob3(54, 55);
+
   
   //initialize values for encoders
   knob1.write(0);
   knob2.write(0);
   knob3.write(0);
    
-  //set up bounce library for the 4 menu buttons
-  Bounce backbutton = Bounce(33, 10); 
-  Bounce nextbutton = Bounce(34, 10); 
-  Bounce prevbutton = Bounce(35, 10); 
-  Bounce entrbutton = Bounce(36, 10);
+  
+  backbutton.update();
+  nextbutton.update();
+  prevbutton.update();
+  entrbutton.update();
  
   //initialize with the current channel for the menu set to 1
   currently_selected_menu_channel = 1;
@@ -349,7 +361,7 @@ void previous_button()
     case 9://only one option in this submenu - no update neccesary
       break;
     case 10://wraparound for the compression submenu
-      menustate = 15
+      menustate = 15;
       break;
     case 16://wraparound for the monitor channel select submenu
       menustate = 22;
@@ -413,7 +425,7 @@ void peakfiltercalc(double dBgain, double freq, double Q, double &c0, double &c1
     double sn = sin(omega);
     double cs = cos(omega);
     double alpha = sn / (2 * Q);
-    double beta = sqrt(2 * A);
+    //double beta = sqrt(2 * A); // this wasn't being used anywhere
    
      b0 = 1 + (alpha * A);
      b1 = -2 * cs;
@@ -430,18 +442,18 @@ void peakfiltercalc(double dBgain, double freq, double Q, double &c0, double &c1
 
 }
   
-void notchfiltercalc(double freq, double Q, double &c0, double &c1, double &c2, double &c3, double &c4)
+void notchfiltercalc(double dBgain, double freq, double Q, double &c0, double &c1, double &c2, double &c3, double &c4)
 {
   double srate = 48000;
   
-  double A = pow(10, dBgain / 40);
+  //double A = pow(10, dBgain / 40); //this isn't being used anywhere
   double O = 2 * 3.14159 * (freq / srate);
   
   double sn = sin(O);
   double cs = cos(O);
   
   double alpha = sn / (2 * Q);
-  double beta = sqrt(2 * A);
+  //double beta = sqrt(2 * A); - this isn't being used anywhere
     
   double b0 = 1;
   double b1 = -2 * cs;
@@ -452,11 +464,11 @@ void notchfiltercalc(double freq, double Q, double &c0, double &c1, double &c2, 
   
   
   //return these, or have values in by reference
-  double c0 = b0 / a0;
-  double c1 = b1 / a0;
-  double c2 = b2 / a0;
-  double c3 = a1 / a0;
-  double c4 = a2 / a0;
+  c0 = b0 / a0;
+  c1 = b1 / a0;
+  c2 = b2 / a0;
+  c3 = a1 / a0;
+  c4 = a2 / a0;
 }
 
 void lowshelffiltercalc(double dBgain, double freq, double &c0, double &c1, double &c2, double &c3, double &c4){
@@ -470,21 +482,19 @@ void lowshelffiltercalc(double dBgain, double freq, double &c0, double &c1, doub
 
      double beta = sqrt(2 * A);
 
-     b0 = A*[ (A+1) - (A-1)*cs + beta*sn ];
-     b1 = 2*A*[ (A-1) - (A+1)*cs ];
-     b2 = A*[ (A+1) - (A-1)*cs - beta*sn ];
+     b0 = A*( (A+1) - (A-1)*cs + beta*sn );
+     b1 = 2*A*( (A-1) - (A+1)*cs );
+     b2 = A*( (A+1) - (A-1)*cs - beta*sn );
      a0 = (A+1) + (A-1)*cs + beta*sn;
-     a1 = -2*[ (A-1) + (A+1)*cs ];
+     a1 = -2*( (A-1) + (A+1)*cs );
      a2 = (A+1) + (A-1)*cs - beta*sn;
 
 
-
-
-     double c0 = b0 / a0;
-     double c1 = b1 / a0;
-     double c2 = b2 / a0;
-     double c3 = a1 / a0;
-     double c4 = a2 / a0;
+     c0 = b0 / a0;
+     c1 = b1 / a0;
+     c2 = b2 / a0;
+     c3 = a1 / a0;
+     c4 = a2 / a0;
 }
 
 void highshelffiltercalc(double dBgain, double freq, double &c0, double &c1, double &c2, double &c3, double &c4){
@@ -498,18 +508,18 @@ void highshelffiltercalc(double dBgain, double freq, double &c0, double &c1, dou
     
     double beta = sqrt(2 * A);
 
-    b0 = A*[ (A+1) - (A-1)*cs + beta*sn ];
-    b1 = -2*A*[ (A-1) - (A+1)*cs ];
-    b2 = A*[ (A+1) - (A-1)*cs - beta*sn ];
+    b0 = A*( (A+1) - (A-1)*cs + beta*sn );
+    b1 = -2*A*( (A-1) - (A+1)*cs );
+    b2 = A*( (A+1) - (A-1)*cs - beta*sn );
     a0 = (A+1) + (A-1)*cs + beta*sn;
-    a1 = 2*[ (A-1) + (A+1)*cs ];
+    a1 = 2*( (A-1) + (A+1)*cs );
     a2 = (A+1) + (A-1)*cs - beta*sn;
 
-    double c0 = b0 / a0;
-    double c1 = b1 / a0;
-    double c2 = b2 / a0;
-    double c3 = a1 / a0;
-    double c4 = a2 / a0;
+    c0 = b0 / a0;
+    c1 = b1 / a0;
+    c2 = b2 / a0;
+    c3 = a1 / a0;
+    c4 = a2 / a0;
 }
 
 uint16_t apply_filter(uint16_t inp, uint16_t &x1, uint16_t &x2, uint16_t &y1, uint16_t &y2, double c0, double c1, double c2, double c3, double c4){
@@ -517,7 +527,7 @@ uint16_t apply_filter(uint16_t inp, uint16_t &x1, uint16_t &x2, uint16_t &y1, ui
   x2 = (x1);
   x1 = (inp);
   y2 = (y1);
-  y_1 = (output1);
+  y1 = (output1);
   return output1;
 }
 
@@ -577,10 +587,10 @@ double scale_fader(uint16_t fader_value){
    double dBmax = +20;
    double range = dBmax - dBmin;
 
-   double zeroShape = 10^(dBmin/20);
+   double zeroShape = pow(10,(dBmin/20));
    double unityFix = 1 / (1 + zeroShape);
 
-   double scaled_gain = (10^((range*temp_fader_val-dBmin)/20)-zeroShape)*unityFix;
+   double scaled_gain = pow(10,((range*temp_fader_val-dBmin)/20)-zeroShape)*unityFix;
 
    return scaled_gain;
   
@@ -615,7 +625,7 @@ double scale_fader(uint16_t fader_value){
      //threshold(dB), ratio, third knob does nothing
      
 
-encoder1_update(int increment)
+void encoder1_update(int increment)
 {
    knob1.write(0); //write zero value so as to allow that deviation from zero to be significant
    switch(menustate)//depends on where you are in the menu
@@ -625,7 +635,8 @@ encoder1_update(int increment)
        break;
    }
 }
-encoder2_update(int increment)
+
+void encoder2_update(int increment)
 {
   knob2.write(0);//write zero value so as to allow that deviation from zero to be significant
   switch(menustate)//depends on where you are in the menu
@@ -635,7 +646,8 @@ encoder2_update(int increment)
        break;
   }
 }
-encoder3_update(int increment)
+
+void encoder3_update(int increment)
 {
   knob3.write(0);//write zero value so as to allow that deviation from zero to be significant
   switch(menustate)//depends on where you are in the menu
@@ -646,7 +658,7 @@ encoder3_update(int increment)
   }
 }
      
-update_screens()
+void update_screens()
 {
   tft.fillScreen(HX8357_WHITE);
   switch(menustate)
