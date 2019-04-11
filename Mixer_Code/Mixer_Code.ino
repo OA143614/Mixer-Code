@@ -729,7 +729,7 @@ void update_screens()
       tft.setCursor(270, 60);
       
       tft.setTextSize(3);
-      switch(current_menu_channel){
+      switch(currently_selected_menu_channel){
         case 1:
           tft.println("Channel 1");
           break;
