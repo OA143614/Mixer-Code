@@ -754,6 +754,7 @@ void update_screens()
       tft.println("Press Enter to select");
       break;
     case 6://show the band 1 parametric EQ selection
+
       tft.setTextSize(5);
       tft.setCursor(45, 45);
       tft.setTextColor(HX8357_BLACK);
@@ -764,35 +765,192 @@ void update_screens()
       tft.setTextSize(3);
       tft.println("Low shelf");
 
+      tft.setCursor(50,155);
+      tft.setTextSize(2);
+      tft.println("Corner Frequency:");
+
+      tft.setCursor(50,195);
+      tft.setTextSize(2);
+      tft.println("Gain:");
+
       tft.setCursor(270, 60);
+      
       
       tft.setTextSize(3);
       switch(currently_selected_menu_channel){
         case 1:
           tft.println("Channel 1");
+          tft.setCursor(250,155);
+          tft.setTextSize(2);
+          tft.print(channel_1_band_1_corner_freq);
+          tft.setCursor(250,195);
+          tft.print(channel_1_band_1_gain);
           break;
         case 2:
           tft.println("Channel 2");
+          tft.setCursor(250,155);
+          tft.setTextSize(2);
+          tft.print(channel_2_band_1_corner_freq);
+          tft.setCursor(250,195);
+          tft.print(channel_2_band_1_gain);
           break;
         case 3:
           tft.println("Channel 3");
+          tft.setCursor(250,155);
+          tft.setTextSize(2);
+          tft.print(channel_3_band_1_corner_freq);
+          tft.setCursor(250,195);
+          tft.print(channel_3_band_1_gain);
           break;
         case 4:
           tft.println("Channel 4");
+          tft.setCursor(250,155);
+          tft.setTextSize(2);
+          tft.print(channel_4_band_1_corner_freq);
+          tft.setCursor(250,195);
+          tft.print(channel_4_band_1_gain);
           break;
         default:
           break;
       }
+
       break;
     case 7://show the band 2 parametric EQ selection
       tft.setTextSize(5);
+      tft.setCursor(45, 45);
       tft.setTextColor(HX8357_BLACK);
       tft.println("Band 2");
+
+
+      tft.setCursor(75, 95);
+      tft.setTextSize(3);
+      tft.println("Peak Filter");
+
+      tft.setCursor(50,155);
+      tft.setTextSize(2);
+      tft.println("Center Frequency:");
+
+      tft.setCursor(50,195);
+      tft.setTextSize(2);
+      tft.println("Gain:");
+
+      
+      tft.setCursor(50,235);
+      tft.setTextSize(2);
+      tft.println("Q Factor:");
+
+      tft.setCursor(270, 60);
+      
+      
+      tft.setTextSize(3);
+      switch(currently_selected_menu_channel){
+        case 1:
+          tft.println("Channel 1");
+          tft.setCursor(250,155);
+          tft.setTextSize(2);
+          tft.print(channel_1_band_2_center_freq);
+          tft.setCursor(250,195);
+          tft.print(channel_1_band_2_gain);
+          tft.setCursor(250,235);
+          tft.print(channel_1_band_2_q);
+          break;
+        case 2:
+          tft.println("Channel 2");
+          tft.setCursor(250,155);
+          tft.setTextSize(2);
+          tft.print(channel_2_band_2_center_freq);
+          tft.setCursor(250,195);
+          tft.print(channel_2_band_2_gain);
+          tft.setCursor(250,235);
+          tft.print(channel_2_band_2_q);
+          break;
+        case 3:
+          tft.println("Channel 3");
+          tft.setCursor(250,155);
+          tft.setTextSize(2);
+          tft.print(channel_3_band_2_center_freq);
+          tft.setCursor(250,195);
+          tft.print(channel_3_band_2_gain);
+          tft.setCursor(250,235);
+          tft.print(channel_3_band_2_q);
+          break;
+        case 4:
+          tft.println("Channel 4");
+          tft.setCursor(250,155);
+          tft.setTextSize(2);
+          tft.print(channel_4_band_2_center_freq);
+          tft.setCursor(250,195);
+          tft.print(channel_4_band_2_gain);
+          tft.setCursor(250,235);
+          tft.print(channel_4_band_2_q);
+          break;
+        default:
+          break;
+      }
+
+      
       break;
     case 8://show the band 3 parametric EQ selection
+
       tft.setTextSize(5);
+      tft.setCursor(45, 45);
       tft.setTextColor(HX8357_BLACK);
       tft.println("Band 3");
+
+
+      tft.setCursor(75, 95);
+      tft.setTextSize(3);
+      tft.println("High shelf");
+
+      tft.setCursor(50,155);
+      tft.setTextSize(2);
+      tft.println("Corner Frequency:");
+
+      tft.setCursor(50,195);
+      tft.setTextSize(2);
+      tft.println("Gain:");
+
+      tft.setCursor(270, 60);
+      
+      
+      tft.setTextSize(3);
+      switch(currently_selected_menu_channel){
+        case 1:
+          tft.println("Channel 1");
+          tft.setCursor(250,155);
+          tft.setTextSize(2);
+          tft.print(channel_1_band_3_corner_freq);
+          tft.setCursor(250,195);
+          tft.print(channel_1_band_3_gain);
+          break;
+        case 2:
+          tft.println("Channel 2");
+          tft.setCursor(250,155);
+          tft.setTextSize(2);
+          tft.print(channel_2_band_3_corner_freq);
+          tft.setCursor(250,195);
+          tft.print(channel_2_band_3_gain);
+          break;
+        case 3:
+          tft.println("Channel 3");
+          tft.setCursor(250,155);
+          tft.setTextSize(2);
+          tft.print(channel_3_band_3_corner_freq);
+          tft.setCursor(250,195);
+          tft.print(channel_3_band_3_gain);
+          break;
+        case 4:
+          tft.println("Channel 4");
+          tft.setCursor(250,155);
+          tft.setTextSize(2);
+          tft.print(channel_4_band_3_corner_freq);
+          tft.setCursor(250,195);
+          tft.print(channel_4_band_3_gain);
+          break;
+        default:
+          break;
+      }
+
       break;
     case 9://show the bands of the graphic EQ
       tft.setTextSize(5);
