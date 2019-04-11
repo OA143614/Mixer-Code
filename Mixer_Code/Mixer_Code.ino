@@ -100,12 +100,12 @@ Bounce entrbutton = Bounce(36, 10);
 
 
 //define main display
-#define TFT_CS 31
-#define TFT_DC 30 //this needs to change
-#define MOSI 0
-#define SCK 32
+#define TFT_CS 9
+#define TFT_DC 10 //this needs to change
+#define MOSI 11
+#define SCK 13
 #define TFT_RST -1 // RST can be set to -1 if you tie it to Arduino's reset
-#define MISO 1
+#define MISO 12
 
 Adafruit_HX8357 tft = Adafruit_HX8357(TFT_CS, TFT_DC, MOSI, SCK, TFT_RST, MISO);
 
@@ -665,33 +665,86 @@ void update_screens()
   {
     case 1://show the welcome screen
       tft.setTextSize(5);
+      tft.setCursor(75, 100);
+      tft.setTextColor(HX8357_BLACK);  
+      tft.println("ALLEN");
+      tft.setTextColor(HX8357_RED);
+      tft.setCursor(225, 100);
+      tft.println("&");
       tft.setTextColor(HX8357_BLACK);
-      tft.println("ALLEN&KEITH\nDIGITAL AUDIO MIXER");
+      tft.setCursor(255, 100);
+      tft.println("KEITH");
+      tft.setTextSize(3);
+      tft.setCursor(75, 150);
+      tft.println("DIGITAL AUDIO MIXER");
+      
       break;
     case 2://show the parametric EQ top level menu option
-      tft.setTextSize(5);
+     tft.setTextSize(5);
+      tft.setCursor(55, 100);
       tft.setTextColor(HX8357_BLACK);
       tft.println("Parametric EQ");
+      tft.setCursor(65, 140);
+      tft.setTextSize(3);
+      tft.println("Press Enter to select");
       break;
     case 3://show the graphic EQ top level menu option
-      tft.setTextSize(5);
+       tft.setTextSize(5);
+      tft.setCursor(110, 100);
       tft.setTextColor(HX8357_BLACK);
       tft.println("Graphic EQ");
+      tft.setCursor(65, 140);
+      tft.setTextSize(3);
+      tft.println("Press Enter to select");
       break;
     case 4://show the compression top level menu option
       tft.setTextSize(5);
+      tft.setCursor(90, 100);
       tft.setTextColor(HX8357_BLACK);
       tft.println("Compression");
+      tft.setCursor(65, 140);
+      tft.setTextSize(3);
+      tft.println("Press Enter to select");
       break;
     case 5://show the monitor channel select top level menu option
       tft.setTextSize(5);
+      tft.setCursor(20, 100);
       tft.setTextColor(HX8357_BLACK);
-      tft.println("Monitor Channel Select");
+      tft.println("Monitor Channel");
+      tft.setCursor(65, 140);
+      tft.setTextSize(3);
+      tft.println("Press Enter to select");
       break;
     case 6://show the band 1 parametric EQ selection
       tft.setTextSize(5);
+      tft.setCursor(45, 45);
       tft.setTextColor(HX8357_BLACK);
       tft.println("Band 1");
+
+
+      tft.setCursor(75, 95);
+      tft.setTextSize(3);
+      tft.println("Low shelf");
+
+      tft.setCursor(270, 60);
+      
+      tft.setTextSize(3);
+      switch(current_menu_channel){
+        case 1:
+          tft.println("Channel 1");
+          break;
+        case 2:
+          tft.println("Channel 2");
+          break;
+        case 3:
+          tft.println("Channel 3");
+          break;
+        case 4:
+          tft.println("Channel 4");
+          break;
+        default:
+          break;
+      }
       break;
     case 7://show the band 2 parametric EQ selection
       tft.setTextSize(5);
