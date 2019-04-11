@@ -121,7 +121,14 @@ double channel_3_band_3_gain;
 double channel_4_band_3_gain;
 
 //Graphic
+double main_mix_low_band;
+double aux_mix_low_band;
 
+double main_mix_middle_band;
+double aux_mix_middle_band;
+
+double main_mix_high_band;
+double aux_mix_high_band;
 
 
 //set up encoders
@@ -668,32 +675,124 @@ void encoder1_update(int increment)
    knob1.write(0); //write zero value so as to allow that deviation from zero to be significant
    switch(menustate)//depends on where you are in the menu
    {
-
-     default:
+    case 6:// this is band 1 of parametric eq
+     switch(currently_selected_menu_channel){
+      case 1://update channel 1's parametric eq band 1 corner frequency
+      case 2://channel 2
+      case 3://etc
+      case 4:
+      default:
        break;
+     }
+     break;
+    case 7://this is band 2 of parametric eq
+     switch(currently_selected_menu_channel){
+      case 1://update channel 1's parametric eq band 2 center frequency
+      case 2://channel 2
+      case 3://etc
+      case 4:
+      default:
+       break;
+     }
+    case 8:// this is band 3 of parametric eq
+     switch(currently_selected_menu_channel){
+      case 1://update channel 1's parametric eq band 3 corner frequency
+      case 2://channel 2
+      case 3://etc
+      case 4:
+      default:
+       break;
+     }
+
+    case 9://handle the graphic eq - this is for the low frequency one
+     switch(currently_selected_output){
+      case 1:
+       break;
+      case 2:
+       break;
+      default:
+       break;
+     }
+    default:
+     break;
    }
 }
 
 void encoder2_update(int increment)
 {
   knob2.write(0);//write zero value so as to allow that deviation from zero to be significant
-  switch(menustate)//depends on where you are in the menu
-  {
-      
-     default:
+   switch(menustate)//depends on where you are in the menu
+   {
+    case 6:// this is band 1 of parametric eq
+     switch(currently_selected_menu_channel){
+      case 1://update channel 1's parametric eq band 1 gain
+      case 2://channel 2
+      case 3://etc
+      case 4:
+      default:
        break;
-  }
+     }
+     break;
+    case 7://this is band 2 of parametric eq
+     switch(currently_selected_menu_channel){
+      case 1://update channel 1's parametric eq band 2 gain
+      case 2://channel 2
+      case 3://etc
+      case 4:
+      default:
+       break;
+     }
+    case 8:// this is band 3 of parametric eq
+     switch(currently_selected_menu_channel){
+      case 1://update channel 1's parametric eq band 3 gain
+      case 2://channel 2
+      case 3://etc
+      case 4:
+      default:
+       break;
+     }
+
+    case 9://handle the graphic eq - this is for the middle frequency one
+     switch(currently_selected_output){
+      case 1:
+       break;
+      case 2:
+       break;
+      default:
+       break;
+     }
+    default:
+     break;
+   }
 }
 
 void encoder3_update(int increment)
 {
   knob3.write(0);//write zero value so as to allow that deviation from zero to be significant
-  switch(menustate)//depends on where you are in the menu
-  {
-      
-     default:
+   switch(menustate)//depends on where you are in the menu
+   {
+    case 7://this is band 2 of parametric eq
+     switch(currently_selected_menu_channel){
+      case 1://update channel 1's parametric eq band 2 q factor
+      case 2://channel 2
+      case 3://etc
+      case 4:
+      default:
        break;
-  }
+     }
+
+    case 9://handle the graphic eq - this is for the higher frequency one
+     switch(currently_selected_output){
+      case 1:
+       break;
+      case 2:
+       break;
+      default:
+       break;
+     }
+    default://you don't need to use the encoders
+     break;
+   }
 }
      
 void update_screens()
