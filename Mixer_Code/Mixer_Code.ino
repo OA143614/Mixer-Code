@@ -83,7 +83,45 @@ int currently_selected_menu_channel;
 int currently_selected_headphone_channel;
 
 //filter coefficients
-//how do these look, how many are there, where are they kept
+
+//Parametric
+double channel_1_band_1_corner_freq;
+double channel_2_band_1_corner_freq;
+double channel_3_band_1_corner_freq;
+double channel_4_band_1_corner_freq;
+
+double channel_1_band_1_gain;
+double channel_2_band_1_gain;
+double channel_3_band_1_gain;
+double channel_4_band_1_gain;
+
+double channel_1_band_2_center_freq;
+double channel_2_band_2_center_freq;
+double channel_3_band_2_center_freq;
+double channel_4_band_2_center_freq;
+
+double channel_1_band_2_gain;
+double channel_2_band_2_gain;
+double channel_3_band_2_gain;
+double channel_4_band_2_gain;
+
+double channel_1_band_2_q;
+double channel_2_band_2_q;
+double channel_3_band_2_q;
+double channel_4_band_2_q;
+
+double channel_1_band_3_corner_freq;
+double channel_2_band_3_corner_freq;
+double channel_3_band_3_corner_freq;
+double channel_4_band_3_corner_freq;
+
+double channel_1_band_3_gain;
+double channel_2_band_3_gain;
+double channel_3_band_3_gain;
+double channel_4_band_3_gain;
+
+//Graphic
+
 
 
 //set up encoders
