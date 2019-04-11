@@ -121,14 +121,14 @@ double channel_3_band_3_gain;
 double channel_4_band_3_gain;
 
 //Graphic
-double main_mix_low_band;
-double aux_mix_low_band;
+double main_mix_low_band_gain;
+double aux_mix_low_band_gain;
 
-double main_mix_middle_band;
-double aux_mix_middle_band;
+double main_mix_middle_band_gain;
+double aux_mix_middle_band_gain;
 
-double main_mix_high_band;
-double aux_mix_high_band;
+double main_mix_high_band_gain;
+double aux_mix_high_band_gain;
 
 
 //set up encoders
