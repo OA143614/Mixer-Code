@@ -82,6 +82,9 @@ int currently_selected_menu_channel;
 //this keeps the number of the channel that the headphone monitor is tapped into
 int currently_selected_headphone_channel;
 
+//this keeps the value of the currently selected output
+int currently_selected_output;
+
 //filter coefficients
 
 //Parametric
@@ -184,6 +187,8 @@ int samples_buffer_current_index;
 void setup() 
 {//initialization and setup of all initial values and initial state
  
+ 
+ 
   //Initialize screens
   Channel_1_display.begin(SSD1306_SWITCHCAPVCC, 0x3C);
   Channel_2_display.begin(SSD1306_SWITCHCAPVCC, 0x3D);
@@ -230,8 +235,13 @@ void setup()
   //initialize with the current channel for the menu set to 1
   currently_selected_menu_channel = 1;
  
+  //intitialize with the main output selected
+  currently_selected_output = 1;
+ 
   //initialize the value for the current headphone channel
   currently_selected_headphone_channel = 0; //not listening to any channel
+ 
+  
   
   //set up screens
   tft.begin();
@@ -441,8 +451,14 @@ void enter_button()
       if(currently_selected_menu_channel == 5) //if it's past the end, reset it to the first channel
         currently_selected_menu_channel = 1;        
       break;
+   case 10:
+     if(currently_selected_output == 1){
+      currently_selected_output = 2;
+     }else{
+      currently_selected_output = 1;
+     }
+     break;
    case 16: //set the headphone monitor to listen to input 1
-      
       break;
    case 17: //set the headphone monitor to listen to input 2
       break;
